@@ -21,7 +21,7 @@ typedef struct KVDb {
 } KVDb;
 
 int    db_set(KVDb *db, const char *key, const char *value);
-char  *db_get(KVDb *db, const char *key);
+char* db_get(KVDb *db, const char *key);
 int    db_del(KVDb *db, const char *key);
 void   db_list(const KVDb *db);
 

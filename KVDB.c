@@ -56,3 +56,18 @@ int db_set(KVDb *db, const char *key, const char *value){
     db->count++; 
     return 0;
 }
+
+char* db_get(KVDb* db, char *key){
+    if (!db || !key){
+        return NULL;
+    }
+    unsigned int index = hash(key);
+    entry *e = db->table[index];
+    while(e!=NULL){
+        if(strcmp(e->key, key)==0){
+            return e->value;
+        }
+        e = e->next; 
+    }
+    return NULL;
+}
