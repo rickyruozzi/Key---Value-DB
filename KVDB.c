@@ -126,3 +126,20 @@ int db_save(const KVDb *db, const char *path){
     fclose(F);
     return 0;
 }
+
+int db_load(KVDb *db, const char *path){
+    if (!db || !path) return -1;
+    FILE *f = fopen(path, "r");
+    if (!f) return -1;   
+    char line[KEY_LEN + VALUE_LEN + 4]; //linea letta dal file
+    while (fgets(line, sizeof(line), f)) { //finché leggiamo linee
+        size_t len = strlen(line);
+        if (len > 0 && line[len-1] == '\n') line[--len] = '\0'; //modifica il carattere per andare a capo con il terminatore di stringa
+        char *tab = strchr(line, '\t'); //puntatore alla posizione di \t
+        if (!tab) continue;   //se non trova il carattere
+        *tab = '\0'; //aggiungendo il terminatore al posto di \t splittiamo le stringhe, il primo puntatore line ora punta alla chiave e tab+1 al valore
+        db_set(db, line, tab + 1); //tab+1, byte successivo al puntatore
+    }
+    fclose(f);
+    return 0;
+}
