@@ -188,6 +188,34 @@ bool exist_key(KVDb *db, const char *key){
     return false;
 }
 
+void db_list_values(KVDb *db){
+    if(!db) return;
+    printf(" Valori \n");
+    for(int i=0; i<TABLE_SIZE; i++){
+        entry *e = db->table[i];
+        while(e){
+            printf("%s \n", e->value);
+            e = e->next;
+        }
+    }
+    printf("entry count: %zu\n", db->count);
+}
+
+void find_value(KVDb *db, const char *value){
+    if(!db || !value) return;
+    printf(" Chiavi \n");
+    for(int i=0; i<TABLE_SIZE; i++){
+        entry *e = db->table[i];
+        while(e){
+            if(strcmp(e->value, value)==0){
+                printf("%s \n", e->key);
+            }
+            e = e->next;
+        }
+    }
+
+}
+
 int main() {
     printf("Test KVDB - key_pattern_search\n\n");
     

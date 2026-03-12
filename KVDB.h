@@ -31,6 +31,8 @@ int    db_load(KVDb *db, const char *path);
 
 
 void key_pattern_search(KVDb *db, const char *pattern);
-bool exist_key(const char* key);
+bool exist_key(KVDb *db, const char* key);
+void db_list_values(KVDb *db);
+void find_value(KVDb *db, const char* value);
 
 #endif
