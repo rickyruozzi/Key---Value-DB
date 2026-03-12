@@ -95,3 +95,16 @@ int db_del(KVDb* db, const char* key){
     }
     return -2;
 }
+
+void db_list(KVDb* db){
+    if(!db) return;
+    printf("Chiave - Valore \n");
+    for(int i=0; i<TABLE_SIZE; i++){
+        entry *e = db->table[i];
+        while(e){
+            printf("%s - %s", e->key, e->value);
+            e = e->next;
+        }
+    }
+    printf("entry count: %zu", db->count);
+}
