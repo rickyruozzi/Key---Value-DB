@@ -174,6 +174,20 @@ void key_pattern_search(KVDb *db, const char *pattern){
     printf("Trovate %zu entries\n\n", count);
 }
 
+bool exist_key(KVDb *db, const char *key){
+    if(!key || !db) return false;
+    for(int i=0; i<TABLE_SIZE; i++){
+        entry *e = db->table[i];
+        while(e){
+            if(strcmp(e->key, key)==0){
+                return true;
+            }
+            e = e->next;
+        }
+    }
+    return false;
+}
+
 int main() {
     printf("Test KVDB - key_pattern_search\n\n");
     
@@ -197,6 +211,8 @@ int main() {
     key_pattern_search(db, "xyz");
     
     printf("Get 'test1': %s\n", db_get(db, "test1"));
+    
+    printf("La chiave xyz esiste? %d", exist_key(db, 'xyz'));
     
     db_destroy(db);
     

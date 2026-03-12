@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define KEY_LEN 256
 #define VALUE_LEN 1024
@@ -30,5 +31,6 @@ int    db_load(KVDb *db, const char *path);
 
 
 void key_pattern_search(KVDb *db, const char *pattern);
+bool exist_key(const char* key);
 
 #endif
