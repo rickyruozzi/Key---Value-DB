@@ -28,4 +28,7 @@ void   db_list(const KVDb *db);
 int    db_save(const KVDb *db, const char *path);
 int    db_load(KVDb *db, const char *path);
 
+
+void key_pattern_search(KVDb *db, const char *pattern);
+
 #endif

@@ -143,3 +143,21 @@ int db_load(KVDb *db, const char *path){
     fclose(f);
     return 0;
 }
+
+void key_pattern_search(KVDb *db, const char *pattern){
+    if(!db) return;
+    if(!pattern) return;
+    size_t count = 0;
+    printf("Chiave - Valore \n");
+    for(int i=0; i<TABLE_SIZE; i++){
+        entry *e = db->table[i];
+        while(e){
+            if(strstr(e->key, pattern)!=NULL){ 
+                printf("%s - %s\n", e->key, e->value);
+                count++;
+            }
+            e = e->next;
+        }
+    }
+    printf("entry count: %zu\n", count);
+}
