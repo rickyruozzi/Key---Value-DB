@@ -108,3 +108,21 @@ void db_list(KVDb* db){
     }
     printf("entry count: %zu", db->count);
 }
+
+int db_save(const KVDb *db, const char *path){
+    if(!db || !path) return -1;
+    FILE *F = fopen(path, 'w');
+    if(!F){
+        printf("impossibile aprire il file");
+        return -1;
+    }
+    for(int i=0; i<TABLE_SIZE; i++){
+        entry *e = db->table[i];
+        while(e){
+            fprintf(F, "%s\t%s\n", e->key, e->value);
+            e = e->next;
+        }
+    }
+    fclose(F);
+    return 0;
+}
