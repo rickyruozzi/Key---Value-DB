@@ -57,7 +57,7 @@ int db_set(KVDb *db, const char *key, const char *value){
     return 0;
 }
 
-char* db_get(KVDb* db, char *key){
+char* db_get(KVDb *db,const char *key){
     if (!db || !key){
         return NULL;
     }
@@ -70,4 +70,28 @@ char* db_get(KVDb* db, char *key){
         e = e->next; 
     }
     return NULL;
+}
+
+int db_del(KVDb* db, const char* key){
+    if(!db || !key) return -1;
+    unsigned int index = hash(key);
+    entry *e = db->table[index];
+    entry *prev = NULL;
+    while(e){
+        if(strcmp(e->key, key) == 0){
+            if(prev){
+                prev->next = e->next; 
+                free(e);
+                return 0;
+            }
+            else{
+                db->table[index] = e->next;
+                free(e);
+                return 0;
+            }
+        }
+        prev = e;
+        e = e->next;
+    }
+    return -2;
 }
