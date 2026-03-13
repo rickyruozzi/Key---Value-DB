@@ -1,5 +1,6 @@
 #include "KVDB.h"
 #include <stdio.h>
+#include <string.h>
 
 int main() {
     KVDb* db = db_create();
@@ -37,6 +38,28 @@ int main() {
     printf("\\n=== TEST rename to existing ===\\n");
     rename_key(db, "newtest1", "best");  // Should print "already exists" and not overwrite
     printf("get('best') after attempt = %s (should still be value2)\\n", db_get(db, "best"));
+
+    // === TEST append_key ===
+    printf("\\n=== TEST append_key ===\\n");
+    
+    // Test successful append
+    db_set(db, "append_test", "hello");
+    printf("Before append: get('append_test') = %s\\n", db_get(db, "append_test"));
+    append_key(db, "append_test", " world");
+    printf("After append: get('append_test') = %s (should be 'hello world')\\n", db_get(db, "append_test"));
+    
+    // Test append to non-existing
+    int res = append_key(db, "nonexistent", " foo");
+    printf("Append to non-existing returned %d (should be -2)\\n", res);
+    
+    // Test overflow (VALUE_LEN is 1024, so truncate for test)
+    db_set(db, "overflow_test", "a");
+    char long_str[VALUE_LEN];
+    memset(long_str, 'x', VALUE_LEN - 1);
+    long_str[VALUE_LEN - 1] = '\\0';  // Full length
+    res = append_key(db, "overflow_test", long_str);  // 1 + 1023 = 1024 < 1024? No, >= VALUE_LEN
+    printf("Overflow append returned %d (should be -1)\\n", res);
+    printf("overflow_test value after: %s (should still 'a')\\n", db_get(db, "overflow_test"));
     
     printf("\\n=== FINAL LIST ===\\n");
     db_list(db);

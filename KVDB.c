@@ -246,6 +246,39 @@ int rename_key(KVDb* db, const char *old_key, const char *new_key) {
     return 0;
 }
 
+
+int append_key(KVDb *db, const char *key, const char *string_to_append) {
+    if (!db || !key || !string_to_append) {
+        printf("Parametri non validi\n");
+        return -1;
+    }
+    if (strlen(key) >= KEY_LEN || strlen(string_to_append) >= VALUE_LEN) {
+        printf("Chiave o stringa troppo lunga\n");
+        return -1;
+    }
+
+    unsigned int index = hash(key);
+    entry *e = db->table[index];
+    while (e != NULL) {
+        if (strcmp(e->key, key) == 0) {
+            size_t av_len = strlen(e->value);
+            size_t sa_len = strlen(string_to_append);
+            if (av_len + sa_len >= VALUE_LEN) return -1;
+            
+            char buffer[VALUE_LEN];
+            strncpy(buffer, e->value, sizeof(buffer) - 1);
+            buffer[sizeof(buffer) - 1] = '\0';
+            strncat(buffer, string_to_append, sizeof(buffer) - strlen(buffer) - 1);
+            strncpy(e->value, buffer, VALUE_LEN - 1);
+            e->value[VALUE_LEN - 1] = '\0';
+            return 0;
+        }
+        e = e->next;
+    }
+    printf("Chiave '%s' non trovata\n", key);
+    return -2;
+}
+
 /*Ecco alcune idee divise per categoria:
 
 Manipolazione

@@ -38,6 +38,7 @@ void db_list_values(KVDb *db);
 void find_value(KVDb *db, const char* value);
 
 int rename_key(KVDb* db, const char *old_key, const char *new_key);
+int append_key(KVDb *db, const char *key, const char *string_to_append);
 
 unsigned int hash(const char *key);
 
