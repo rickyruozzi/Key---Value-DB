@@ -176,14 +176,13 @@ void key_pattern_search(KVDb *db, const char *pattern){
 
 bool exist_key(KVDb *db, const char *key){
     if(!key || !db) return false;
-    for(int i=0; i<TABLE_SIZE; i++){
-        entry *e = db->table[i];
-        while(e){
-            if(strcmp(e->key, key)==0){
-                return true;
-            }
-            e = e->next;
+    unsigned int index = hash(key);
+    entry *e = db->table[index];
+    while(e){
+        if(strcmp(e->key, key)==0){
+            return true;
         }
+        e = e->next;
     }
     return false;
 }
@@ -216,35 +215,59 @@ void find_value(KVDb *db, const char *value){
 
 }
 
-int main() {
-    printf("Test KVDB - key_pattern_search\n\n");
-    
-    KVDb* db = db_create();
-    
-    db_set(db, "test1", "valore test 1");
-    db_set(db, "best", "migliore valore");
-    db_set(db, "keytest", "test chiave 3");
-    db_set(db, "apple", "frutta");
-    
-    printf("=== Lista completa ===\n");
-    db_list(db);
-    
-    printf("=== key_pattern_search 'test' ===\n");
-    key_pattern_search(db, "test");
-    
-    printf("=== key_pattern_search 'e' ===\n");
-    key_pattern_search(db, "e");
-    
-    printf("=== key_pattern_search 'xyz' ===\n");
-    key_pattern_search(db, "xyz");
-    
-    printf("Get 'test1': %s\n", db_get(db, "test1"));
-    
-    printf("La chiave xyz esiste? %d", exist_key(db, 'xyz'));
-    
-    db_destroy(db);
-    
-    printf("Test completati!\n");
+int rename_key(KVDb* db, const char *old_key, const char *new_key) {
+    if (!db || !old_key || !new_key) {
+        printf("Valori non idonei\n");
+        return -1;
+    }
+    if (strlen(old_key) >= KEY_LEN || strlen(new_key) >= KEY_LEN) {
+        printf("Chiave troppo lunga\n");
+        return -1;
+    }
+
+    char* old_val = db_get(db, old_key);
+    if (!old_val) {
+        printf("Impossibile trovare la chiave '%s'\n", old_key);
+        return -2;
+    }
+
+    if (exist_key(db, new_key)) {
+        printf("New key '%s' already exists\n", new_key);
+        return -3;
+    }
+
+    if (db_del(db, old_key) != 0) {
+        return -2;
+    }
+    if (db_set(db, new_key, old_val) != 0) {
+        return -1;
+    }
+
     return 0;
 }
 
+/*Ecco alcune idee divise per categoria:
+
+Manipolazione
+
+RENAME key newkey – rinomina una chiave
+APPEND key testo – concatena testo a un valore esistente
+INCR key / DECR key – incrementa/decrementa un valore numerico
+MSET k1 v1 k2 v2 ... – set multiplo in una sola operazione
+MGET k1 k2 ... – get multiplo
+
+Scadenza
+
+EXPIRE key secondi – imposta un TTL alla chiave
+TTL key – quanti secondi mancano alla scadenza
+PERSIST key – rimuove il TTL
+
+Statistiche e debug
+
+STATS – mostra load factor, collisioni, bucket usati
+DUMP – stampa la struttura interna bucket per bucket (utile per capire le collisioni)
+
+Persistenza
+
+BGSAVE – salvataggio asincrono con fork()
+EXPORT csv – esporta in formato CSV*/

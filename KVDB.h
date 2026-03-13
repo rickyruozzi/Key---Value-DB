@@ -21,6 +21,8 @@ typedef struct KVDb {
     size_t count;
 } KVDb;
 
+KVDb* db_create(void);
+void   db_destroy(KVDb *db);
 int    db_set(KVDb *db, const char *key, const char *value);
 char* db_get(KVDb *db, const char *key);
 int    db_del(KVDb *db, const char *key);
@@ -34,5 +36,9 @@ void key_pattern_search(KVDb *db, const char *pattern);
 bool exist_key(KVDb *db, const char* key);
 void db_list_values(KVDb *db);
 void find_value(KVDb *db, const char* value);
+
+int rename_key(KVDb* db, const char *old_key, const char *new_key);
+
+unsigned int hash(const char *key);
 
 #endif
