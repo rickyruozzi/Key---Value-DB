@@ -1,4 +1,6 @@
 #include "KVDB.h"
+#include <errno.h>
+
 
 unsigned int hash(const char *key) {
     unsigned long h = 5381;
@@ -247,6 +249,19 @@ int rename_key(KVDb* db, const char *old_key, const char *new_key) {
 }
 
 
+bool is_numeric(const char *str, long *result) {
+    if (!str || !*str) return false;
+    
+    char *endptr;
+    errno = 0;
+    
+    *result = strtol(str, &endptr, 10);
+    
+    return (errno == 0 && 
+            endptr != str && 
+            *endptr == '\0');
+}
+
 int append_key(KVDb *db, const char *key, const char *string_to_append) {
     if (!db || !key || !string_to_append) {
         printf("Parametri non validi\n");
@@ -277,6 +292,32 @@ int append_key(KVDb *db, const char *key, const char *string_to_append) {
     }
     printf("Chiave '%s' non trovata\n", key);
     return -2;
+}
+
+void increase_decrease_value(KVDb* db, const char* key, bool flag){
+    if(!db || !key){
+        return;
+    }
+    char* value = db_get(db, key);
+    if(!value) return;
+    long int_val = 0;
+    if (is_numeric(value, &int_val))
+    {
+        if(flag){
+            int_val = int_val + 1;
+        }
+        else{
+            int_val = int_val -1 ;
+        }
+        char new_value[VALUE_LEN];
+        snprintf(new_value, sizeof(new_value), "%ld", int_val);
+        if(strlen(new_value) > VALUE_LEN-1) return;
+        db_set(db, key, new_value);
+    }
+    else{
+        printf("valore non convertibile in intero");
+        return;
+    }
 }
 
 /*Ecco alcune idee divise per categoria:

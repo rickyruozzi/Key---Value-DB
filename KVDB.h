@@ -42,4 +42,9 @@ int append_key(KVDb *db, const char *key, const char *string_to_append);
 
 unsigned int hash(const char *key);
 
+void increase_decrease_value(KVDb* db, const char* key, bool flag);
+
+
+bool is_numeric(const char *str, long *result);
+
 #endif

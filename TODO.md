@@ -1,13 +1,24 @@
-# TODO - append_key fixes (approved plan)
+# Piano Implementazione Nuovi Metodi KVDB (Approved)
 
-✅ Understand files and create plan
+**Step completati:**
+- [x] Capire files e creare piano
+- [x] Creare TODO.md
 
-🔄 Current step: Breakdown plan into steps
+**Step rimanenti:**
+- [ ] Implementare conversione safe string → long per INCR/DECR
+- [ ] Aggiungere metodi INCR/DECR in KVDB.h + KVDB.c
+- [ ] Aggiungere MSET/MGET 
+- [ ] Aggiungere STATS
+- [ ] Aggiungere EXPORT CSV
+- [ ] Test completi in KVDB_test.c
+- [ ] Compilare: gcc -o kvdb_test.exe *.c
+- [ ] Eseguire test: ./kvdb_test.exe
+- [ ] Completa task con attempt_completion
 
-- [x] Create TODO.md
-- [ ] Fix append_key implementation in KVDB.c
-- [ ] Add comprehensive tests for append_key in KVDB_test.c  
-- [ ] Compile: gcc -o kvdb_test.exe KVDB_test.c KVDB.c
-- [ ] Run ./kvdb_test.exe and verify append_key tests
-- [ ] Update TODO.md with results
-- [ ] Complete task
+**Step completati:**
+- [x] Implementare `is_numeric()` in KVDB.h/c ✅
+
+**TODO rimanenti:**
+- [ ] Testare compilazione
+- [ ] Implementare INCR/DECR usando is_numeric()
+- [ ] Altri metodi (MSET/MGET, STATS, etc.)

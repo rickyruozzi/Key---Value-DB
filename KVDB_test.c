@@ -61,9 +61,39 @@ int main() {
     printf("Overflow append returned %d (should be -1)\\n", res);
     printf("overflow_test value after: %s (should still 'a')\\n", db_get(db, "overflow_test"));
     
+    // === TEST increase_decrease_value ===
+    printf("\\n=== TEST increase_decrease_value ===\\n");
+    
+    // Test setup numeric
+    db_set(db, "counter", "42");
+    printf("Before increase: get('counter') = %s\\n", db_get(db, "counter"));
+    
+    // Test increase
+    increase_decrease_value(db, "counter", true);
+    printf("After increase: get('counter') = %s (should be 43)\\n", db_get(db, "counter"));
+    
+    // Test decrease
+    increase_decrease_value(db, "counter", false);
+    printf("After decrease: get('counter') = %s (should be 42)\\n", db_get(db, "counter"));
+    
+    // Test non-numeric
+    db_set(db, "text", "abc");
+    increase_decrease_value(db, "text", true);
+    printf("Non-numeric after increase attempt: %s (should still abc)\\n", db_get(db, "text"));
+    
+    // Test zero
+    db_set(db, "zero", "0");
+    increase_decrease_value(db, "zero", false);
+    printf("Zero decrease: %s (should be -1)\\n", db_get(db, "zero"));
+    
+    // Test missing key
+    increase_decrease_value(db, "missing", true);
+    printf("Missing key handled (no crash)\\n");
+    
     printf("\\n=== FINAL LIST ===\\n");
     db_list(db);
     
     db_destroy(db);
     return 0;
 }
+
